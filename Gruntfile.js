@@ -33,8 +33,8 @@ module.exports = function (grunt) {
             options: {
                 jshintrc: "jshint.json"
             },
-            "gruntfile": [ "Gruntfile.js" ],
-            "prince":    [ "PEGUtil.js" ]
+            "gruntfile":  [ "Gruntfile.js" ],
+            "pegjs-util": [ "PEGUtil.js" ]
         },
         eslint: {
             options: {
