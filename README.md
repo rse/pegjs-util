@@ -5,8 +5,8 @@ pegjs-util
 This is a small utility class for the excellent
 [PEG.js](http://pegjs.org/) parser generator which wraps around PEG.js's
 central `parse` function and provides three distinct convenience
-features: Parser Tree Token Unrolling, Abstract Syntax Tree Node
-Generation and Cooked Error Reporting.
+features: *Parser Tree Token Unrolling*, *Abstract Syntax Tree Node
+Generation* and *Cooked Error Reporting*.
 
 <p/>
 <img src="https://nodei.co/npm/pegjs-util.png?downloads=true&stars=true" alt=""/>
