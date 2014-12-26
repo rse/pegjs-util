@@ -38,23 +38,23 @@ Usage
 
 ```
 {
-    var unroll = options.util.makeUnroll(line, column, offset, SyntaxError);
-    var ast    = options.util.makeAST(line, column, offset);
+    var unroll = options.util.makeUnroll(line, column, offset, SyntaxError)
+    var ast    = options.util.makeAST(line, column, offset)
 }
 
 start
     = _ seq:id_seq _ {
-          return ast("Sample").add(seq);
+          return ast("Sample").add(seq)
       }
 
 id_seq
     = id:id ids:(_ "," _ id)* {
-          return ast("IdentifierSequence").add(unroll(id, ids, 3));
+          return ast("IdentifierSequence").add(unroll(id, ids, 3))
       }
 
 id
     = id:$([a-zA-Z_][a-zA-Z0-9_]*) {
-          return ast("Identifier").set("name", id);
+          return ast("Identifier").set("name", id)
       }
 
 _ "blank"
@@ -71,15 +71,15 @@ ws "whitespaces"
 #### sample.js
 
 ```js
-var fs      = require("fs");
-var PEG     = require("pegjs");
-var PEGUtil = require("./PEGUtil");
+var fs      = require("fs")
+var PEG     = require("pegjs")
+var PEGUtil = require("./PEGUtil")
 
-var parser = PEG.buildParser(fs.readFileSync("sample.pegjs", "utf8"));
-var result = PEGUtil.parse(parser, fs.readFileSync(process.argv[2], "utf8"), "start");
+var parser = PEG.buildParser(fs.readFileSync("sample.pegjs", "utf8"))
+var result = PEGUtil.parse(parser, fs.readFileSync(process.argv[2], "utf8"), "start")
 if (result.error !== null)
     console.log("ERROR: Parsing Failure:\n" +
-        PEGUtil.errorMessage(result.error, true).replace(/^/mg, "ERROR: "));
+        PEGUtil.errorMessage(result.error, true).replace(/^/mg, "ERROR: "))
 else
     console.log(result.ast.dump().replace(/\n$/, ""))
 ```
@@ -124,7 +124,7 @@ only relevant ones should be picked:
 
 ```
 id_seq = id:id ids:(_ "," _ id)* {
-    return unroll(id, ids, 3);
+    return unroll(id, ids, 3)
 }
 ```
 
@@ -148,7 +148,7 @@ place the following at the top of your grammar definition:
 
 ```js
 {
-    var unroll = options.util.makeUnroll(line, column, offset, SyntaxError);
+    var unroll = options.util.makeUnroll(line, column, offset, SyntaxError)
 }
 ```
 
@@ -164,7 +164,7 @@ For this PEGUtil provides you a simple AST implementation.
 
 ```
 id_seq = id:id ids:(_ "," _ id)* {
-    return ast("IdentifierSequence").add(unroll(id, ids, 3));
+    return ast("IdentifierSequence").add(unroll(id, ids, 3))
 }
 ```
 
@@ -176,7 +176,7 @@ place the following at the top of your grammar definition:
 
 ```js
 {
-    var ast = options.util.makeAST(line, column, offset);
+    var ast = options.util.makeAST(line, column, offset)
 }
 ```
 
