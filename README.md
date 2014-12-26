@@ -108,7 +108,7 @@ an `ast` field (in case of success) or an `error` field
 (in case of an error). In case of an error, the `error`
 field provides cooked error information which
 allow you to print out reasonable human-friendly error
-messages (especially because of the `location` field:
+messages (especially because of the `location` field):
 
 ```js
 result = {
@@ -126,6 +126,9 @@ result = {
     }
 }
 ```
+
+For convenience reasons you can create a standard
+human-friendly error message with `PEGUtil.errorMessage`.
 
 Installation
 ------------
@@ -160,19 +163,8 @@ start
 
 ```js
 var result = PEGUtil.parse(parser, source, "start");
-if (result.error !== null) {
-    var e = result.error;
-    let prefix1 = "line " + e.line + " (col " + e.column + "): ";
-    let prefix2 = "";
-    for (var i = 0; i < prefix1.length + e.location.prolog.length; i++)
-        prefix2 += "-";
-    var l = e.location;
-    console.log("PARSING FAILED\n" +
-        "ERROR: " + prefix1 + l.prolog + l.token + l.epilog + "\n" +
-        "ERROR: " + prefix2 + "^" + "\n" +
-        "ERROR: " + e.message + "\n"
-    );
-}
+if (result.error !== null)
+    console.log(PEGUtil.errorMessage(result.error, true));
 else {
     [...result.ast...]
 }
