@@ -107,9 +107,11 @@
 
         /*  set AST node attributes  */
         set: function () {
-            var self = this;
-            if (arguments.length === 1 && typeof arguments[0] === "object")
-                Object.keys(arguments[0]).forEach(function (key) { self.A[key] = arguments[0][key]; });
+            if (arguments.length === 1 && typeof arguments[0] === "object") {
+                var self = this;
+                var args = arguments;
+                Object.keys(args[0]).forEach(function (key) { self.A[key] = args[0][key]; });
+            }
             else if (arguments.length === 2)
                 this.A[arguments[0]] = arguments[1];
             else
@@ -132,7 +134,7 @@
         /*  add child AST node(s)  */
         add: function () {
             if (arguments.length === 0)
-                throw new Error("add: invalid argument");
+                throw new Error("add: missing argument(s)");
             var _add = function (C, node) {
                 if (!((typeof node   === "object") &&
                       (typeof node.T === "string") &&
@@ -218,10 +220,10 @@
                                         .replace(/\//g, "\\/") +
                                     "/";
                                 else
-                                    out += value.toString();
+                                    out += JSON.stringify(value);
                                 break;
                             default:
-                                out += value.toString();
+                                out += JSON.stringify(value);
                                 break;
                         }
                     });
