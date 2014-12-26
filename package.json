@@ -24,6 +24,7 @@
         "grunt-cli":            "~0.1.13",
         "grunt-contrib-jshint": "~0.10.0",
         "grunt-contrib-clean":  "~0.6.0",
-        "grunt-eslint":         "~2.1.0"
+        "grunt-eslint":         "~2.1.0",
+        "pegjs":                "~0.8.0"
     }
 }
