@@ -19,7 +19,35 @@ central `parse` function and provides three distinct convenience features:
 
 ### Parser Tree Token Unrolling
 
-...
+In many PEG.js gammar rule actions one has to concatenate a first token
+and a repeated sequence of tokens, where from the sequence of tokens
+only relevant ones should be picked:
+
+```
+id_seq = id:id ids:(_ "," id)* {
+    return unroll(id, ids, 2);
+}
+```
+
+Here an array of ids is returned, consisting of the first token `id` and
+then all 3rd tokens from each element of the `ids` repetition.
+The `unroll` function has the following signature:
+
+```
+unroll(first: Token, list: Token[], take: Number): Token[]
+```
+
+To make the `unroll` method available to your actions code,
+place the following at the to of your grammar definition:
+
+```js
+{
+    var unroll = options.util.makeUnroll(line, column, offset, SyntaxError);
+}
+```
+
+The `options.util.makeUnroll` is made available automatically
+by using `PEGUtil.parse` instead of PEG.js's standard parser method `parse`.
 
 ### Abstract Syntax Tree Node Generation
 
