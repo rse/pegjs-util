@@ -93,16 +93,29 @@
         },
 
         /*  check the type of an AST node  */
-        isA: function (T) {
-            return this.T === T;
+        type: function (T) {
+            if (arguments.length === 0)
+                return this.T;
+            else if (arguments.length === 1) {
+                this.T = T;
+                return this;
+            }
+            else
+                throw new Error("type: invalid number of arguments");
         },
 
         /*  set the parsing position   */
         pos: function (L, C, O) {
-            this.P.L = L || 0;
-            this.P.C = C || 0;
-            this.P.O = O || 0;
-            return this;
+            if (arguments.length === 0)
+                return this.P;
+            else if (arguments.length <= 3) {
+                this.P.L = L || 0;
+                this.P.C = C || 0;
+                this.P.O = O || 0;
+                return this;
+            }
+            else
+                throw new Error("pos: invalid number of arguments");
         },
 
         /*  set AST node attributes  */
@@ -121,9 +134,15 @@
 
         /*  get AST node attributes  */
         get: function (key) {
-            if (typeof key !== "string")
-                throw new Error("get: invalid argument");
-            return this.A[key];
+            if (arguments.length === 0)
+                return this.A;
+            else if (arguments.length === 1) {
+                if (typeof key !== "string")
+                    throw new Error("get: invalid argument");
+                return this.A[key];
+            }
+            else
+                throw new Error("get: invalid number of arguments");
         },
 
         /*  get child AST nodes  */
