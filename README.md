@@ -24,20 +24,21 @@ and a repeated sequence of tokens, where from the sequence of tokens
 only relevant ones should be picked:
 
 ```
-id_seq = id:id ids:(_ "," id)* {
-    return unroll(id, ids, 2);
+id_seq = id:id ids:(_ "," _ id)* {
+    return unroll(id, ids, 3);
 }
 ```
 
 Here an array of ids is returned, consisting of the first token `id` and
-then all 3rd tokens from each element of the `ids` repetition.
+then all 4th tokens from each element of the `ids` repetition.
+
 The `unroll` function has the following signature:
 
 ```
-unroll(first: Token, list: Token[], take: Number): Token[]
+unroll(first: Token, list: Token[], take: (Number[] || Number)): Token[]
 ```
 
-To make the `unroll` method available to your actions code,
+To make the `unroll` function available to your actions code,
 place the following at the to of your grammar definition:
 
 ```js
@@ -49,9 +50,54 @@ place the following at the to of your grammar definition:
 The `options.util.makeUnroll` is made available automatically
 by using `PEGUtil.parse` instead of PEG.js's standard parser method `parse`.
 
+The `unroll` method accepts `first` to be `null` and
+`take` can be either just a single position (counting from 0)
+or a list of positions.
+
 ### Abstract Syntax Tree Node Generation
 
-...
+Usually the result of PEG.js grammar rule actions should
+be the generation of an Abstract Syntax Tree (AST) node.
+For this PEGUtil provides an AST implementation.
+
+```
+id_seq = id:id ids:(_ "," _ id)* {
+    return AST("IdentifierSequence").add(unroll(id, ids, 3));
+}
+```
+
+Here the result is an AST node of type `IdentifierSequence`
+which contains all identifiers as child nodes.
+
+The `AST` function has the following signature:
+
+```
+AST(type: String): Node
+```
+
+Each AST Node has the following methods:
+
+```js
+Node#isA(type: String): Boolean
+Node#pos(line: Number, column: Number, offset: Number): Node
+Node#set(name: String, value: Object): Node
+Node#set({ (name: String): (value: Object), [...] }): Node
+Node#get(name: String): Object
+Node#childs(): Node[]
+Node#add(childs: (Node || Node[])[]): Node
+Node#del(childs: Node[]): Node
+Node#walk(callback: (node: Node, depth: Number) => Void [, after: Boolean]): Node
+Node#dump(): String
+```
+
+To make the `AST` function available to your actions code,
+place the following at the to of your grammar definition:
+
+```js
+{
+    var AST = options.util.makeAST(line, column, offset);
+}
+```
 
 ### Cooked Error Reporting
 
