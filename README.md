@@ -2,7 +2,11 @@
 pegjs-util
 ===========
 
-Utility class for the [PEG.js](http://pegjs.org/) parser generator.
+This is a small utility class for the excellent
+[PEG.js](http://pegjs.org/) parser generator which wraps around PEG.js's
+central `parse` function and provides three distinct convenience
+features: Parser Tree Token Unrolling, Abstract Syntax Tree Node
+Generation and Cooked Error Reporting.
 
 <p/>
 <img src="https://nodei.co/npm/pegjs-util.png?downloads=true&stars=true" alt=""/>
@@ -10,16 +14,111 @@ Utility class for the [PEG.js](http://pegjs.org/) parser generator.
 <p/>
 <img src="https://david-dm.org/rse/pegjs-util.png" alt=""/>
 
-About
+Installation
+------------
+
+#### Node environments (with NPM package manager):
+
+```shell
+$ npm install pegjs
+$ npm install pegjs-util
+```
+
+#### Browser environments (with Bower package manager):
+
+```shell
+$ bower install pegjs
+$ bower install pegjs-util
+```
+
+Usage
 -----
 
-This is a small utility class for the excellent
+#### sample.pegjs
+
+```
+{
+    var unroll = options.util.makeUnroll(line, column, offset, SyntaxError);
+    var ast    = options.util.makeAST(line, column, offset);
+}
+
+start
+    = _ seq:id_seq _ {
+          return ast("Sample").add(seq);
+      }
+
+id_seq
+    = id:id ids:(_ "," _ id)* {
+          return ast("IdentifierSequence").add(unroll(id, ids, 3));
+      }
+
+id
+    = id:$([a-zA-Z_][a-zA-Z0-9_]*) {
+          return ast("Identifier").set("name", id);
+      }
+
+_ "blank"
+    = (co / ws)*
+
+co "comment"
+    = "//" (![\r\n] .)*
+    / "/*" (!"*/" .)* "*/"
+
+ws "whitespaces"
+    = [ \t\r\n]+
+```
+
+#### sample.js
+
+```js
+var fs      = require("fs");
+var PEG     = require("pegjs");
+var PEGUtil = require("./PEGUtil");
+
+var parser = PEG.buildParser(fs.readFileSync("sample.pegjs", "utf8"));
+var result = PEGUtil.parse(parser, fs.readFileSync(process.argv[2], "utf8"), "start");
+if (result.error !== null)
+    console.log("ERROR: Parsing Failure:\n" +
+        PEGUtil.errorMessage(result.error, true).replace(/^/mg, "ERROR: "));
+else
+    console.log(result.ast.dump().replace(/\n$/, ""))
+```
+
+#### Example Session
+
+```shell
+$ cat sample-input-ok.txt
+/*  some ok input  */
+foo, bar, quux
+
+$ node sample.js sample-input-ok.txt
+Sample [1/1]
+    IdentifierSequence [2/1]
+        Identifier (name: "foo") [2/1]
+        Identifier (name: "bar") [2/6]
+        Identifier (name: "quux") [2/11]
+
+$ cat sample-input-bad.txt
+/*  some bad input  */
+foo, bar, quux baz
+
+$ node sample.js sample-input-bad.txt
+ERROR: Parsing Failure:
+ERROR: line 2 (col 16):   */\nfoo, bar, quux baz\n
+ERROR: --------------------------------------^
+ERROR: Expected "," or end of input but "b" found.
+```
+
+Description
+-----------
+
+PEGUtil is a small utility class for the excellent
 [PEG.js](http://pegjs.org/) parser generator. It wraps around PEG.js's
 central `parse` function and provides three distinct convenience features:
 
 ### Parser Tree Token Unrolling
 
-In many PEG.js gammar rule actions one has to concatenate a first token
+In many PEG.js gammar rule actions you have to concatenate a first token
 and a repeated sequence of tokens, where from the sequence of tokens
 only relevant ones should be picked:
 
@@ -29,16 +128,22 @@ id_seq = id:id ids:(_ "," _ id)* {
 }
 ```
 
-Here an array of ids is returned, consisting of the first token `id` and
-then all 4th tokens from each element of the `ids` repetition.
+Here the `id_seq` rule returns an array of ids, consisting of the first
+token `id` and then all 4th tokens from each element of the `ids`
+repetition.
 
 The `unroll` function has the following signature:
 
 ```
-unroll(first: Token, list: Token[], take: (Number[] || Number)): Token[]
+unroll(first: Token, list: Token[], take: Number): Token[]
+unroll(first: Token, list: Token[], take: Number[]): Token[]
 ```
 
-To make the `unroll` function available to your actions code,
+It accepts `first` to be also `null` (and then skips this) and `take`
+can be either just a single position (counting from 0) or a list of
+positions.
+
+To make the `unroll` function available to your rule actions code,
 place the following at the top of your grammar definition:
 
 ```js
@@ -47,68 +152,96 @@ place the following at the top of your grammar definition:
 }
 ```
 
-The `options.util.makeUnroll` is made available automatically
-by using `PEGUtil.parse` instead of PEG.js's standard parser method `parse`.
-
-The `unroll` method accepts `first` to be `null` and
-`take` can be either just a single position (counting from 0)
-or a list of positions.
+The `options.util` above points to the PEGUtil API and is made available
+automatically by using `PEGUtil.parse` instead of PEG.js's standard
+parser method `parse`.
 
 ### Abstract Syntax Tree Node Generation
 
 Usually the result of PEG.js grammar rule actions should
 be the generation of an Abstract Syntax Tree (AST) node.
-For this PEGUtil provides an AST implementation.
+For this PEGUtil provides you a simple AST implementation.
 
 ```
 id_seq = id:id ids:(_ "," _ id)* {
-    return AST("IdentifierSequence").add(unroll(id, ids, 3));
+    return ast("IdentifierSequence").add(unroll(id, ids, 3));
 }
 ```
 
 Here the result is an AST node of type `IdentifierSequence`
-which contains all identifiers as child nodes.
+which contains no attributes but all identifiers as child nodes.
 
-The `AST` function has the following signature:
-
-```
-AST(type: String): Node
-```
-
-Each AST Node has the following methods:
-
-```js
-Node#isA(type: String): Boolean
-Node#pos(line: Number, column: Number, offset: Number): Node
-Node#set(name: String, value: Object): Node
-Node#set({ (name: String): (value: Object), [...] }): Node
-Node#get(name: String): Object
-Node#childs(): Node[]
-Node#add(childs: (Node || Node[])[]): Node
-Node#del(childs: Node[]): Node
-Node#walk(callback: (node: Node, depth: Number) => Void [, after: Boolean]): Node
-Node#dump(): String
-```
-
-To make the `AST` function available to your actions code,
+To make the `ast` function available to your rule actions code,
 place the following at the top of your grammar definition:
 
 ```js
 {
-    var AST = options.util.makeAST(line, column, offset);
+    var ast = options.util.makeAST(line, column, offset);
 }
 ```
 
+The `options.util` above again points to the PEGUtil API and is made available
+automatically by using `PEGUtil.parse` instead of PEG.js's standard
+parser method `parse`.
+
+The `ast` function has the following signature:
+
+```
+ast(type: String): Node
+```
+
+Each AST Node has the following methods:
+
+- `Node#isA(type: String): Boolean`:<br/>
+  Check whether node is of a particular type.
+
+- `Node#pos(line: Number, column: Number, offset: Number): Node`:<br/>
+  Set the position for the node. This is done automatically
+  in the function which is generated by `PEGUtil.makeAST`.
+
+- `Node#set(name: String, value: Object): Node`:<br/>
+  Set a single attribute `name` to `value`.
+
+- `Node#set({ [name: String]: [value: Object] }): Node`:<br/>
+  Set multiple attributes, each consisting of name and value pairs.
+
+- `Node#get(name: String): Object`:<br/>
+  Get value of attribute `name`.
+
+- `Node#childs(): Node[]`:<br/>
+  Get a nodes list of childs.
+
+- `Node#add(childs: Node[]): Node`:<br/>
+  Add one or more childs to a node. The array `childs`
+  can either contain `Node` objects or even arrays
+  of `Node` objects.
+
+- `Node#del(childs: Node[]): Node`:<br/>
+  Delete one or more childs from a node.
+
+- `Node#walk(callback: (node: Node, depth: Number, whenNow: String) => Void, when?: String): Node`:<br/>
+  Recursively walk the AST starting at this node (at depth 0). For each
+  visited node the `callback` function is called with the current node
+  and the tree depth. By default (and if `when` is either `before` or
+  `both`), the callback is called before(!) all child nodes are visited
+  and with `whenNow` set to `before`. If `when` is set to `after` or
+  `both`, the callback is called after(!) all child nodes are visited
+  ande with `whenNow` set to `after`.
+
+- `Node#dump(): String`:<br/>
+  Returns a textual dump of the AST starting at the current node.
+
 ### Cooked Error Reporting
 
-Instead of calling `parser.parse(source[, startRule])` you
-now should call `PEGUtil.parse(parser, source[, startRule])`.
-The result then is always an object consisting of either
-an `ast` field (in case of success) or an `error` field
-(in case of an error). In case of an error, the `error`
-field provides cooked error information which
-allow you to print out reasonable human-friendly error
-messages (especially because of the `location` field):
+Instead of calling the regular PEG.js `parser.parse(source[,
+startRule])` you now should call `PEGUtil.parse(parser, source[,
+startRule])`. The result then is always an object consisting of either
+an `ast` field (in case of success) or an `error` field (in case of an
+error).
+
+In case of an error, the `error` field provides cooked error information
+which allow you to print out reasonable human-friendly error messages
+(especially because of the detailed `location` field):
 
 ```js
 result = {
@@ -127,47 +260,9 @@ result = {
 }
 ```
 
-For convenience reasons you can create a standard
-human-friendly error message with `PEGUtil.errorMessage`.
-
-Installation
-------------
-
-### Node/NPM environments:
-
-```shell
-npm install pegjs --save-dev
-npm install pegjs-util --save-dev
-```
-
-### Browser/Bower environments:
-
-```shell
-bower install pegjs
-bower install pegjs-util
-```
-
-Usage
------
-
-```
-{
-    /*  import PEGUtil methods into parser scope  */
-    var unroll = options.util.makeUnroll(line, column, offset, SyntaxError);
-    var ast    = options.util.makeAST(line, column, offset);
-}
-
-start
-    = ...
-```
-
-```js
-var result = PEGUtil.parse(parser, source, "start");
-if (result.error !== null)
-    console.log(PEGUtil.errorMessage(result.error, true));
-else
-    console.log(result.ast.dump())
-```
+For convenience reasons you can render a standard human-friendly
+error message out of this information with
+`PEGUtil.errorMessage(result.error)`.
 
 License
 -------

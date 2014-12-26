@@ -173,15 +173,15 @@
         },
 
         /*  walk the AST recursively  */
-        walk: function (cb, after) {
-            if (typeof after === "undefined")
-                after = false;
+        walk: function (cb, when) {
+            if (typeof when === "undefined")
+                when = "before";
             var _walk = function (node, depth) {
-                if (!after)
-                    cb.call(null, node, depth);
+                if (when === "before" || when == "both")
+                    cb.call(null, node, depth, "before");
                 node.C.forEach(function (child) { _walk(child, depth + 1); });
-                if (after)
-                    cb.call(null, node, depth);
+                if (when === "after" || when == "both")
+                    cb.call(null, node, depth, "after");
             };
             _walk(this, 0);
             return this;
@@ -228,7 +228,7 @@
                     out += ") ";
                 }
                 out += "[" + node.P.L + "/" + node.P.C + "]\n";
-            });
+            }, "before");
             return out;
         }
     };
@@ -324,9 +324,9 @@
         var prefix2 = "";
         for (var i = 0; i < prefix1.length + l.prolog.length; i++)
             prefix2 += "-";
-        var msg = "ERROR: " + prefix1 + l.prolog + l.token + l.epilog + "\n" +
-            "ERROR: " + prefix2 + "^" + "\n" +
-            "ERROR: " + e.message + (noFinalNewline ? "" : "\n");
+        var msg = prefix1 + l.prolog + l.token + l.epilog + "\n" +
+            prefix2 + "^" + "\n" +
+            e.message + (noFinalNewline ? "" : "\n");
         return msg;
     };
 
