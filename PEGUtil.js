@@ -317,6 +317,19 @@
         return result;
     };
 
+    /*  render a useful error message  */
+    PEGUtil.errorMessage = function (e, noFinalNewline) {
+        var l = e.location;
+        var prefix1 = "line " + e.line + " (col " + e.column + "): ";
+        var prefix2 = "";
+        for (var i = 0; i < prefix1.length + l.prolog.length; i++)
+            prefix2 += "-";
+        var msg = "ERROR: " + prefix1 + l.prolog + l.token + l.epilog + "\n" +
+            "ERROR: " + prefix2 + "^" + "\n" +
+            "ERROR: " + e.message + (noFinalNewline ? "" : "\n");
+        return msg;
+    };
+
     return PEGUtil;
 }));
 
