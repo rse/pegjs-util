@@ -39,7 +39,7 @@ unroll(first: Token, list: Token[], take: (Number[] || Number)): Token[]
 ```
 
 To make the `unroll` function available to your actions code,
-place the following at the to of your grammar definition:
+place the following at the top of your grammar definition:
 
 ```js
 {
@@ -91,7 +91,7 @@ Node#dump(): String
 ```
 
 To make the `AST` function available to your actions code,
-place the following at the to of your grammar definition:
+place the following at the top of your grammar definition:
 
 ```js
 {
@@ -101,7 +101,31 @@ place the following at the to of your grammar definition:
 
 ### Cooked Error Reporting
 
-...
+Instead of calling `parser.parse(source[, startRule])` you
+now should call `PEGUtil.parse(parser, source[, startRule])`.
+The result then is always an object consisting of either
+an `ast` field (in case of success) or an `error` field
+(in case of an error). In case of an error, the `error`
+field provides cooked error information which
+allow you to print out reasonable human-friendly error
+messages (especially because of the `location` field:
+
+```js
+result = {
+    error: {
+        line:     Number, /* line number */
+        column:   Number, /* column number */
+        message:  String, /* parsing error message */
+        found:    String, /* found token during parsing */
+        expected: String, /* expected token during parsing */
+        location: {
+            prolog: String, /* text before the error token */
+            token:  String, /* error token */
+            epilog: String  /* text after the error token */
+        }
+    }
+}
+```
 
 Installation
 ------------
@@ -137,10 +161,20 @@ start
 ```js
 var result = PEGUtil.parse(parser, source, "start");
 if (result.error !== null) {
-    ...
+    var e = result.error;
+    let prefix1 = "line " + e.line + " (col " + e.column + "): ";
+    let prefix2 = "";
+    for (var i = 0; i < prefix1.length + e.location.prolog.length; i++)
+        prefix2 += "-";
+    var l = e.location;
+    console.log("PARSING FAILED\n" +
+        "ERROR: " + prefix1 + l.prolog + l.token + l.epilog + "\n" +
+        "ERROR: " + prefix2 + "^" + "\n" +
+        "ERROR: " + e.message + "\n"
+    );
 }
 else {
-    ...
+    [...result.ast...]
 }
 ```
 
