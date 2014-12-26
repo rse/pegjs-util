@@ -123,9 +123,10 @@ and a repeated sequence of tokens, where from the sequence of tokens
 only relevant ones should be picked:
 
 ```
-id_seq = id:id ids:(_ "," _ id)* {
-    return unroll(id, ids, 3)
-}
+id_seq
+    = id:id ids:(_ "," _ id)* {
+          return unroll(id, ids, 3)
+      }
 ```
 
 Here the `id_seq` rule returns an array of ids, consisting of the first
@@ -163,9 +164,10 @@ be the generation of an Abstract Syntax Tree (AST) node.
 For this PEGUtil provides you a simple AST implementation.
 
 ```
-id_seq = id:id ids:(_ "," _ id)* {
-    return ast("IdentifierSequence").add(unroll(id, ids, 3))
-}
+id_seq
+    = id:id ids:(_ "," _ id)* {
+          return ast("IdentifierSequence").add(unroll(id, ids, 3))
+      }
 ```
 
 Here the result is an AST node of type `IdentifierSequence`
