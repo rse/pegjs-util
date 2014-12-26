@@ -211,7 +211,7 @@
         /*  dump the AST recursively  */
         dump: function () {
             var out = "";
-            this.walk(function (node, depth) {
+            this.walk(function (node, depth /*, when */) {
                 for (var i = 0; i < depth; i++)
                     out += "    ";
                 out += node.T + " ";
