@@ -184,6 +184,7 @@
                     cb.call(null, node, depth);
             };
             _walk(this, 0);
+            return this;
         },
 
         /*  dump the AST recursively  */
