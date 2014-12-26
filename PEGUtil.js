@@ -177,10 +177,10 @@
             if (typeof when === "undefined")
                 when = "before";
             var _walk = function (node, depth) {
-                if (when === "before" || when == "both")
+                if (when === "before" || when === "both")
                     cb.call(null, node, depth, "before");
                 node.C.forEach(function (child) { _walk(child, depth + 1); });
-                if (when === "after" || when == "both")
+                if (when === "after" || when === "both")
                     cb.call(null, node, depth, "after");
             };
             _walk(this, 0);
