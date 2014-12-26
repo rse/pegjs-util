@@ -1,0 +1,29 @@
+{
+    "name":        "pegjs-util",
+    "version":     "0.9.0",
+    "description": "Utility Class for PEG.js",
+    "keywords":    [ "pegjs", "parser", "AST", "unroll" ],
+    "main":        "PEGUtil.js",
+    "repository": {
+        "type": "git",
+        "url":  "https://github.com/rse/pegjs-util.git"
+    },
+    "author": {
+        "name":  "Ralf S. Engelschall",
+        "email": "rse@engelschall.com",
+        "url":   "http://engelschall.com"
+    },
+    "licenses": [{
+        "type": "MIT",
+        "url":  "http://opensource.org/licenses/MIT"
+    }],
+    "homepage": "https://github.com/rse/pegjs-util",
+    "bugs":     "https://github.com/rse/pegjs-util/issues",
+    "devDependencies": {
+        "grunt":                "~0.4.5",
+        "grunt-cli":            "~0.1.13",
+        "grunt-contrib-jshint": "~0.10.0",
+        "grunt-contrib-clean":  "~0.6.0",
+        "grunt-eslint":         "~2.1.0"
+    }
+}
