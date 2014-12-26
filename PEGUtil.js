@@ -316,7 +316,6 @@
         return result;
     };
 
-    /*  export the API  */
     return PEGUtil;
 }));
 
