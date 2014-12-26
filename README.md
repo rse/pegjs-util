@@ -165,9 +165,8 @@ start
 var result = PEGUtil.parse(parser, source, "start");
 if (result.error !== null)
     console.log(PEGUtil.errorMessage(result.error, true));
-else {
-    [...result.ast...]
-}
+else
+    console.log(result.ast.dump())
 ```
 
 License
