@@ -43,15 +43,11 @@
     var PEGUtil = {};
 
     /*  helper function for generating a function to generate an AST node  */
-    PEGUtil.makeAST = function makeAST (line, column, offset) {
-        if (makeAST._cb === null)
-            throw new Error("makeAST: no callback set: you have to provide it via PEGUtil.makeAST.cb() first");
+    PEGUtil.makeAST = function makeAST (line, column, offset, options) {
         return function () {
-            return makeAST._cb.call(PEGUtil, line(), column(), offset(), arguments);
+            return options.util.__makeAST.call(null, line(), column(), offset(), arguments);
         };
     };
-    PEGUtil.makeAST.cb = function (cb) { this._cb = cb; };
-    PEGUtil.makeAST._cb = null;
 
     /*  helper function for generating a function to unroll the parse stack  */
     PEGUtil.makeUnroll = function (line, column, offset, SyntaxError) {
@@ -109,19 +105,37 @@
     };
 
     /*  provide top-level parsing functionality  */
-    PEGUtil.parse = function (parser, txt, rule) {
+    PEGUtil.parse = function (parser, txt, options) {
         if (typeof parser !== "object")
             throw new Error("invalid parser object (not an object)");
         if (typeof parser.parse !== "function")
             throw new Error("invalid parser object (no \"parse\" function)");
         if (typeof txt !== "string")
             throw new Error("invalid input text (not a string)");
+        if (typeof options !== "undefined" && typeof options !== "object")
+            throw new Error("invalid options (not an object)");
+        if (typeof options === "undefined")
+            options = {};
         var result = { ast: null, error: null };
         try {
-            var options = { util: PEGUtil };
-            if (typeof rule === "string")
-                options.startRule = rule;
-            result.ast = parser.parse(txt, options);
+            var makeAST;
+            if (typeof options.makeAST === "function")
+                makeAST = options.makeAST;
+            else {
+                makeAST = function (line, column, offset, args) {
+                    return { line: line, column: column, offset: offset, args: args };
+                };
+            }
+            var opts = {
+                util: {
+                    makeUnroll: PEGUtil.makeUnroll,
+                    makeAST:    PEGUtil.makeAST,
+                    __makeAST:  makeAST
+                }
+            };
+            if (typeof options.startRule === "string")
+                opts.startRule = options.startRule;
+            result.ast = parser.parse(txt, opts);
             result.error = null;
         }
         catch (e) {

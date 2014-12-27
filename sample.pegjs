@@ -1,6 +1,6 @@
 {
     var unroll = options.util.makeUnroll(line, column, offset, SyntaxError)
-    var ast    = options.util.makeAST(line, column, offset)
+    var ast    = options.util.makeAST(line, column, offset, options)
 }
 
 start
