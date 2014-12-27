@@ -277,7 +277,7 @@
         };
     };
 
-    /*  helper function for generarting a function to generate an AST node  */
+    /*  helper function for generating a function to generate an AST node  */
     PEGUtil.makeAST = function (line, column, offset) {
         return function (T, A, C) {
             return new PEGUtil.AST(T, A, C).pos(line(), column(), offset());
