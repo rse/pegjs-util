@@ -104,8 +104,8 @@ foo, bar, quux baz
 
 $ node sample.js sample-input-bad.txt
 ERROR: Parsing Failure:
-ERROR: line 2 (col 16):   */\nfoo, bar, quux baz\n
-ERROR: --------------------------------------^
+ERROR: line 2 (column 16):   */\nfoo, bar, quux baz\n
+ERROR: -----------------------------------------^
 ERROR: Expected "," or end of input but "b" found.
 ```
 
