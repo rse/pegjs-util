@@ -44,27 +44,9 @@
             && export_type === "CommonJS"        ))
         /*  CommonJS environment  */
         module.exports = factory(root);
-    else {
+    else
         /*  Browser environment  */
-        var api = factory(root);
-        api.symbol = (function () {
-            var symbol_name = null;
-            var symbol_value;
-            return function (symbol) {
-                if (symbol_name !== null) {
-                    root[symbol_name] = symbol_value;
-                    symbol_name = null;
-                }
-                if (arguments.length === 1) {
-                    symbol_name = symbol;
-                    symbol_value = root[symbol_name];
-                    root[symbol_name] = api;
-                }
-                return api;
-            };
-        })();
-        api.symbol(name);
-    }
+        root[name] = factory(root);
 }(/* global global: false */
   (typeof global !== "undefined" ? global :
   /* global window: false */
