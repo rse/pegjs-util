@@ -26,22 +26,10 @@
 (function (root, name, factory) {
     /* global define: false */
     /* global module: false */
-    var export_type = root[name.replace(/[^a-zA-Z0-9_]/g, "_") + "_export"];
-    if (   (   typeof define === "function"
-            && typeof define.amd !== "undefined"
-            && typeof export_type === "undefined")
-        || (   typeof export_type !== "undefined"
-            && export_type === "AMD"             ))
+    if (typeof define === "function" && typeof define.amd !== "undefined")
         /*  AMD environment  */
-        define(name, function () {
-            return factory(root);
-        });
-    else if (
-           (   typeof module === "object"
-            && typeof module.exports === "object"
-            && typeof export_type === "undefined")
-        || (   typeof export_type !== "undefined"
-            && export_type === "CommonJS"        ))
+        define(name, function () { return factory(root); });
+    else if (typeof module === "object" && typeof module.exports === "object")
         /*  CommonJS environment  */
         module.exports = factory(root);
     else
