@@ -212,8 +212,8 @@ Each AST Node has the following methods:
 - `Node#get(name: String): Object`:<br/>
   Get value of attribute `name`.
 
-- `Node#childs(): Node[]`:<br/>
-  Get a nodes list of childs.
+- `Node#attrs(): ([name: String]: [value: Object])`:<br/>
+  Get all attributes of node.
 
 - `Node#add(childs: Node[]): Node`:<br/>
   Add one or more childs to a node. The array `childs`
@@ -222,6 +222,9 @@ Each AST Node has the following methods:
 
 - `Node#del(childs: Node[]): Node`:<br/>
   Delete one or more childs from a node.
+
+- `Node#childs(): Node[]`:<br/>
+  Get a nodes list of childs.
 
 - `Node#walk(callback: (node: Node, depth: Number, whenNow: String) => Void, when?: String): Node`:<br/>
   Recursively walk the AST starting at this node (at depth 0). For each

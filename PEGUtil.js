@@ -104,20 +104,16 @@
 
         /*  get AST node attributes  */
         get: function (key) {
-            if (arguments.length === 0)
-                return this.A;
-            else if (arguments.length === 1) {
-                if (typeof key !== "string")
-                    throw new Error("get: invalid argument");
-                return this.A[key];
-            }
-            else
+            if (arguments.length !== 1) {
                 throw new Error("get: invalid number of arguments");
+            if (typeof key !== "string")
+                throw new Error("get: invalid argument");
+            return this.A[key];
         },
 
-        /*  get child AST nodes  */
-        childs: function () {
-            return this.C;
+        /*  get all AST node attributes  */
+        attrs: function () {
+            return this.A;
         },
 
         /*  add child AST node(s)  */
@@ -161,6 +157,11 @@
                     throw new Error("del: child not found");
             });
             return this;
+        },
+
+        /*  get child AST nodes  */
+        childs: function () {
+            return this.C;
         },
 
         /*  walk the AST recursively  */
