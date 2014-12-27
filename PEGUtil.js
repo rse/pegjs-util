@@ -104,7 +104,7 @@
 
         /*  get AST node attributes  */
         get: function (key) {
-            if (arguments.length !== 1) {
+            if (arguments.length !== 1)
                 throw new Error("get: invalid number of arguments");
             if (typeof key !== "string")
                 throw new Error("get: invalid argument");
