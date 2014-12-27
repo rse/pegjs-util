@@ -42,220 +42,23 @@
 
     var PEGUtil = {};
 
-    /*  Abstract Syntax Tree (AST)  */
-    PEGUtil.AST = function () {
-        if (!(this instanceof PEGUtil.AST)) {
-            var self = new PEGUtil.AST("");
-            return self.init.apply(self, arguments);
-        }
-        return this.init.apply(this, arguments);
+    /*  helper function for generating a function to generate an AST node  */
+    PEGUtil.makeAST = function makeAST (line, column, offset) {
+        if (makeAST._cb === null)
+            throw new Error("makeAST: no callback set: you have to provide it via PEGUtil.makeAST.cb() first");
+        return function () {
+            return makeAST._cb.call(PEGUtil, line(), column(), offset(), arguments);
+        };
     };
-    PEGUtil.AST.prototype = {
-        /*  constructor helper: AST node initialization  */
-        init: function (T) {
-            if (typeof T === "undefined")
-                throw new Error("init: invalid argument");
-            this.T = T;
-            this.A = {};
-            this.C = [];
-            this.P = { L: 0, C: 0, O: 0 };
-            return this;
-        },
-
-        /*  merge attributes and childs of an AST node  */
-        merge: function (node, takePos, attrMap) {
-            if (typeof node !== "object")
-                throw new Error("merge: invalid AST node argument");
-            if (typeof takePos === "undefined")
-                takePos = false;
-            if (typeof attrMap === "undefined")
-                attrMap = {};
-            var self = this;
-            if (takePos) {
-                var pos = node.pos();
-                self.pos(pos.L, pos.C, pos.O);
-            }
-            node.attrs().forEach(function (attrSource) {
-                var attrTarget = (typeof attrMap[attrSource] !== "undefined" ?
-                    attrMap[attrSource] : attrSource);
-                if (attrTarget !== null)
-                    self.set(attrTarget, node.get(attrSource));
-            });
-            node.childs().forEach(function (child) {
-                self.add(child);
-            });
-            return this;
-        },
-
-        /*  check the type of an AST node  */
-        type: function (T) {
-            if (arguments.length === 0)
-                return this.T;
-            else if (arguments.length === 1) {
-                this.T = T;
-                return this;
-            }
-            else
-                throw new Error("type: invalid number of arguments");
-        },
-
-        /*  set the parsing position   */
-        pos: function (L, C, O) {
-            if (arguments.length === 0)
-                return this.P;
-            else if (arguments.length <= 3) {
-                this.P.L = L || 0;
-                this.P.C = C || 0;
-                this.P.O = O || 0;
-                return this;
-            }
-            else
-                throw new Error("pos: invalid number of arguments");
-        },
-
-        /*  set AST node attributes  */
-        set: function () {
-            if (arguments.length === 1 && typeof arguments[0] === "object") {
-                var self = this;
-                var args = arguments;
-                Object.keys(args[0]).forEach(function (key) { self.A[key] = args[0][key]; });
-            }
-            else if (arguments.length === 2)
-                this.A[arguments[0]] = arguments[1];
-            else
-                throw new Error("set: invalid arguments");
-            return this;
-        },
-
-        /*  get AST node attributes  */
-        get: function (key) {
-            if (arguments.length !== 1)
-                throw new Error("get: invalid number of arguments");
-            if (typeof key !== "string")
-                throw new Error("get: invalid argument");
-            return this.A[key];
-        },
-
-        /*  get names of all AST node attributes  */
-        attrs: function () {
-            return Object.keys(this.A);
-        },
-
-        /*  add child AST node(s)  */
-        add: function () {
-            if (arguments.length === 0)
-                throw new Error("add: missing argument(s)");
-            var _add = function (C, node) {
-                if (!((typeof node   === "object") &&
-                      (typeof node.T === "string") &&
-                      (typeof node.P === "object") &&
-                      (typeof node.A === "object") &&
-                      (typeof node.C === "object" && node.C instanceof Array)))
-                    throw new Error("add: invalid AST node: " + JSON.stringify(node));
-                C.push(node);
-            };
-            var self = this;
-            Array.prototype.slice.call(arguments, 0).forEach(function (arg) {
-                if (typeof arg === "object" && arg instanceof Array)
-                    arg.forEach(function (child) { _add(self.C, child); });
-                else if (arg !== null)
-                    _add(self.C, arg);
-            });
-            return this;
-        },
-
-        /*  delete child AST node(s)  */
-        del: function () {
-            if (arguments.length === 0)
-                throw new Error("del: invalid argument");
-            var self = this;
-            Array.prototype.slice.call(arguments, 0).forEach(function (arg) {
-                var found = false;
-                for (var j = 0; j < self.C.length; j++) {
-                    if (self.C[j] === arg) {
-                        self.C.splice(j, 1);
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found)
-                    throw new Error("del: child not found");
-            });
-            return this;
-        },
-
-        /*  get child AST nodes  */
-        childs: function () {
-            return this.C;
-        },
-
-        /*  walk the AST recursively  */
-        walk: function (cb, when) {
-            if (typeof when === "undefined")
-                when = "before";
-            var _walk = function (node, depth) {
-                if (when === "before" || when === "both")
-                    cb.call(null, node, depth, "before");
-                node.C.forEach(function (child) { _walk(child, depth + 1); });
-                if (when === "after" || when === "both")
-                    cb.call(null, node, depth, "after");
-            };
-            _walk(this, 0);
-            return this;
-        },
-
-        /*  dump the AST recursively  */
-        dump: function () {
-            var out = "";
-            this.walk(function (node, depth /*, when */) {
-                for (var i = 0; i < depth; i++)
-                    out += "    ";
-                out += node.T + " ";
-                var keys = Object.keys(node.A);
-                if (keys.length > 0) {
-                    out += "(";
-                    var first = true;
-                    keys.forEach(function (key) {
-                        if (!first)
-                            out += ", ";
-                        else
-                            first = false;
-                        out += key + ": ";
-                        var value = node.A[key];
-                        switch (typeof value) {
-                            case "string":
-                                out += "\"" + value.replace(/\n/, "\\n").replace(/"/, "\\\"") + "\"";
-                                break;
-                            case "object":
-                                if (value instanceof RegExp)
-                                    out += "/" +
-                                        value.toString()
-                                        .replace(/^\//, "")
-                                        .replace(/\/$/, "")
-                                        .replace(/\//g, "\\/") +
-                                    "/";
-                                else
-                                    out += JSON.stringify(value);
-                                break;
-                            default:
-                                out += JSON.stringify(value);
-                                break;
-                        }
-                    });
-                    out += ") ";
-                }
-                out += "[" + node.P.L + "/" + node.P.C + "]\n";
-            }, "before");
-            return out;
-        }
-    };
+    PEGUtil.makeAST.cb = function (cb) { this._cb = cb; };
+    PEGUtil.makeAST._cb = null;
 
     /*  helper function for generating a function to unroll the parse stack  */
     PEGUtil.makeUnroll = function (line, column, offset, SyntaxError) {
         return function (first, list, take) {
             if (   typeof list !== "object"
                 || !(list instanceof Array))
-                throw new SyntaxError("invalid list argument for unrolling",
+                throw new SyntaxError("unroll: invalid list argument for unrolling",
                     (typeof list), "Array", offset(), line(), column());
             if (typeof take !== "undefined") {
                 if (typeof take === "number")
@@ -274,13 +77,6 @@
                     list.unshift(first);
                 return list;
             }
-        };
-    };
-
-    /*  helper function for generating a function to generate an AST node  */
-    PEGUtil.makeAST = function (line, column, offset) {
-        return function (T, A, C) {
-            return new PEGUtil.AST(T, A, C).pos(line(), column(), offset());
         };
     };
 

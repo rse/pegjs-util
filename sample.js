@@ -1,7 +1,11 @@
 var fs      = require("fs")
+var ASTY    = require("asty")
 var PEG     = require("pegjs")
 var PEGUtil = require("./PEGUtil")
 
+PEGUtil.makeAST.cb(function (line, column, offset, args) {
+    return ASTY.apply(null, args).pos(line, column, offset)
+})
 var parser = PEG.buildParser(fs.readFileSync("sample.pegjs", "utf8"))
 var result = PEGUtil.parse(parser, fs.readFileSync(process.argv[2], "utf8"), "start")
 if (result.error !== null)
