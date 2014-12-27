@@ -1,6 +1,6 @@
 {
     "name":        "pegjs-util",
-    "version":     "0.9.4",
+    "version":     "0.9.5",
     "description": "Utility Class for PEG.js",
     "keywords":    [ "pegjs", "parser", "AST", "unroll" ],
     "main":        "PEGUtil.js",
