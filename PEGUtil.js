@@ -287,11 +287,6 @@
         };
     };
 
-    /*  utility function: return a value or (if undefined) a fallback value  */
-    var definedOrElse = function (value, fallback) {
-        return (typeof value !== "undefined" ? value : fallback);
-    };
-
     /*  provide top-level parsing functionality  */
     PEGUtil.parse = function (parser, txt, rule) {
         if (typeof parser !== "object")
@@ -310,6 +305,9 @@
         }
         catch (e) {
             result.ast = null;
+            var definedOrElse = function (value, fallback) {
+                return (typeof value !== "undefined" ? value : fallback);
+            };
             result.error = {
                 line:     definedOrElse(e.line, 0),
                 column:   definedOrElse(e.column, 0),
