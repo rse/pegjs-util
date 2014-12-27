@@ -62,6 +62,31 @@
             return this;
         },
 
+        /*  merge attributes and childs of an AST node  */
+        merge: function (node, takePos, attrMap) {
+            if (typeof node !== "object")
+                throw new Error("merge: invalid AST node argument");
+            if (typeof takePos === "undefined")
+                takePos = false;
+            if (typeof attrMap === "undefined")
+                attrMap = {};
+            var self = this;
+            if (takePos) {
+                var pos = node.pos();
+                self.pos(pos.L, pos.C, pos.O);
+            }
+            node.attrs().forEach(function (attrSource) {
+                var attrTarget = (typeof attrMap[attrSource] !== "undefined" ?
+                    attrMap[attrSource] : attrSource);
+                if (attrTarget !== null)
+                    self.set(attrTarget, node.get(attrSource));
+            });
+            node.childs().forEach(function (child) {
+                self.add(child);
+            });
+            return this;
+        },
+
         /*  check the type of an AST node  */
         type: function (T) {
             if (arguments.length === 0)
@@ -111,9 +136,9 @@
             return this.A[key];
         },
 
-        /*  get all AST node attributes  */
+        /*  get names of all AST node attributes  */
         attrs: function () {
-            return this.A;
+            return Object.keys(this.A);
         },
 
         /*  add child AST node(s)  */

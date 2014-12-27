@@ -194,6 +194,10 @@ ast(type: String): Node
 
 Each AST Node has the following methods:
 
+- `Node#merge(node: Node, takePos?: Boolean, attrMap?: ([from: String]: [to: (String|null)])): Node`:<br/>
+  Merge attributes, childs and optionally the position of a node.
+  The attributes can be renamed or skipped (if mapped onto `null`).
+
 - `Node#type(type: String): Boolean`:<br/>
   `Node#type(): String`:<br/>
   Set or get type of node.
@@ -212,8 +216,8 @@ Each AST Node has the following methods:
 - `Node#get(name: String): Object`:<br/>
   Get value of attribute `name`.
 
-- `Node#attrs(): ([name: String]: [value: Object])`:<br/>
-  Get all attributes of node.
+- `Node#attrs(): String[]:<br/>
+  Get names of all node attributes.
 
 - `Node#add(childs: Node[]): Node`:<br/>
   Add one or more childs to a node. The array `childs`
