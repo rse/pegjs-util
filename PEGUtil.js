@@ -341,7 +341,7 @@
     /*  render a useful error message  */
     PEGUtil.errorMessage = function (e, noFinalNewline) {
         var l = e.location;
-        var prefix1 = "line " + e.line + " (col " + e.column + "): ";
+        var prefix1 = "line " + e.line + " (column " + e.column + "): ";
         var prefix2 = "";
         for (var i = 0; i < prefix1.length + l.prolog.length; i++)
             prefix2 += "-";
