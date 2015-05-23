@@ -24,8 +24,8 @@
         "grunt-cli":            "~0.1.13",
         "grunt-contrib-jshint": "~0.11.2",
         "grunt-contrib-clean":  "~0.6.0",
-        "grunt-eslint":         "~11.0.0",
-        "asty":                 "~1.1.2"
+        "grunt-eslint":         "~13.0.0",
+        "asty":                 "~1.1.4"
     },
     "peerDependencies": {
         "pegjs":                "~0.8.0"
