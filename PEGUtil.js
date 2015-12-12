@@ -56,15 +56,12 @@
     };
 
     /*  helper function for generating a function to unroll the parse stack  */
-    PEGUtil.makeUnroll = function (location, SyntaxError) {
+    PEGUtil.makeUnroll = function (location, options) {
         return function (first, list, take) {
             if (   typeof list !== "object"
                 || !(list instanceof Array))
-                throw new SyntaxError("unroll: invalid list argument for unrolling",
-                    (typeof list), "Array",
-                    location().start.offset,
-                    location().start.line,
-                    location().start.column);
+                throw new options.util.__SyntaxError("unroll: invalid list argument for unrolling",
+                    (typeof list), "Array", location());
             if (typeof take !== "undefined") {
                 if (typeof take === "number")
                     take = [ take ];
@@ -142,9 +139,10 @@
             }
             var opts = {
                 util: {
-                    makeUnroll: PEGUtil.makeUnroll,
-                    makeAST:    PEGUtil.makeAST,
-                    __makeAST:  makeAST
+                    makeUnroll:    PEGUtil.makeUnroll,
+                    makeAST:       PEGUtil.makeAST,
+                    __makeAST:     makeAST,
+                    __SyntaxError: parser.SyntaxError
                 }
             };
             if (typeof options.startRule === "string")

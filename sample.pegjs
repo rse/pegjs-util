@@ -1,5 +1,5 @@
 {
-    var unroll = options.util.makeUnroll(location, SyntaxError)
+    var unroll = options.util.makeUnroll(location, options)
     var ast    = options.util.makeAST   (location, options)
 }
 
