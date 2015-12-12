@@ -38,8 +38,8 @@ Usage
 
 ```
 {
-    var unroll = options.util.makeUnroll(line, column, offset, SyntaxError)
-    var ast    = options.util.makeAST(line, column, offset, options)
+    var unroll = options.util.makeUnroll(location, SyntaxError)
+    var ast    = options.util.makeAST(location, options)
 }
 
 start
@@ -156,7 +156,7 @@ place the following at the top of your grammar definition:
 
 ```js
 {
-    var unroll = options.util.makeUnroll(line, column, offset, SyntaxError)
+    var unroll = options.util.makeUnroll(location, SyntaxError)
 }
 ```
 
@@ -185,7 +185,7 @@ place the following at the top of your grammar definition:
 
 ```js
 {
-    var ast = options.util.makeAST(line, column, offset, options)
+    var ast = options.util.makeAST(location, options)
 }
 ```
 

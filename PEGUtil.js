@@ -43,19 +43,28 @@
     var PEGUtil = {};
 
     /*  helper function for generating a function to generate an AST node  */
-    PEGUtil.makeAST = function makeAST (line, column, offset, options) {
+    PEGUtil.makeAST = function makeAST (location, options) {
         return function () {
-            return options.util.__makeAST.call(null, line(), column(), offset(), arguments);
+            return options.util.__makeAST.call(
+                null,
+                location().start.line,
+                location().start.column,
+                location().start.offset,
+                arguments
+            );
         };
     };
 
     /*  helper function for generating a function to unroll the parse stack  */
-    PEGUtil.makeUnroll = function (line, column, offset, SyntaxError) {
+    PEGUtil.makeUnroll = function (location, SyntaxError) {
         return function (first, list, take) {
             if (   typeof list !== "object"
                 || !(list instanceof Array))
                 throw new SyntaxError("unroll: invalid list argument for unrolling",
-                    (typeof list), "Array", offset(), line(), column());
+                    (typeof list), "Array",
+                    location().start.offset,
+                    location().start.line,
+                    location().start.column);
             if (typeof take !== "undefined") {
                 if (typeof take === "number")
                     take = [ take ];
@@ -122,8 +131,13 @@
             if (typeof options.makeAST === "function")
                 makeAST = options.makeAST;
             else {
-                makeAST = function (line, column, offset, args) {
-                    return { line: line, column: column, offset: offset, args: args };
+                makeAST = function (location, args) {
+                    return {
+                        line:   location().start.line,
+                        column: location().start.column,
+                        offset: location().start.offset,
+                        args:   args
+                    };
                 };
             }
             var opts = {
@@ -144,12 +158,12 @@
                 return (typeof value !== "undefined" ? value : fallback);
             };
             result.error = {
-                line:     definedOrElse(e.line, 0),
-                column:   definedOrElse(e.column, 0),
+                line:     definedOrElse(e.location.start.line, 0),
+                column:   definedOrElse(e.location.start.column, 0),
                 message:  e.message,
                 found:    definedOrElse(e.found, ""),
                 expected: definedOrElse(e.expected, ""),
-                location: excerpt(txt, definedOrElse(e.offset, 0))
+                location: excerpt(txt, definedOrElse(e.location.start.offset, 0))
             };
         }
         return result;
