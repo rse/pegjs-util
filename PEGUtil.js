@@ -152,17 +152,29 @@
         }
         catch (e) {
             result.ast = null;
-            var definedOrElse = function (value, fallback) {
-                return (typeof value !== "undefined" ? value : fallback);
-            };
-            result.error = {
-                line:     definedOrElse(e.location.start.line, 0),
-                column:   definedOrElse(e.location.start.column, 0),
-                message:  e.message,
-                found:    definedOrElse(e.found, ""),
-                expected: definedOrElse(e.expected, ""),
-                location: excerpt(txt, definedOrElse(e.location.start.offset, 0))
-            };
+            if (e instanceof parser.SyntaxError) {
+                var definedOrElse = function (value, fallback) {
+                    return (typeof value !== "undefined" ? value : fallback);
+                };
+                result.error = {
+                    line:     definedOrElse(e.location.start.line, 0),
+                    column:   definedOrElse(e.location.start.column, 0),
+                    message:  e.message,
+                    found:    definedOrElse(e.found, ""),
+                    expected: definedOrElse(e.expected, ""),
+                    location: excerpt(txt, definedOrElse(e.location.start.offset, 0))
+                };
+            }
+            else {
+                result.error = {
+                    line:     0,
+                    column:   0,
+                    message:  e.message,
+                    found:    "",
+                    expected: "",
+                    location: excerpt("", 0)
+                };
+            }
         }
         return result;
     };
