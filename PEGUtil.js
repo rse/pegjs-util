@@ -137,17 +137,13 @@
                     };
                 };
             }
-            var opts = {
-                util: {
-                    makeUnroll:    PEGUtil.makeUnroll,
-                    makeAST:       PEGUtil.makeAST,
-                    __makeAST:     makeAST,
-                    __SyntaxError: parser.SyntaxError
-                }
+            options.util = {
+                makeUnroll:    PEGUtil.makeUnroll,
+                makeAST:       PEGUtil.makeAST,
+                __makeAST:     makeAST,
+                __SyntaxError: parser.SyntaxError
             };
-            if (typeof options.startRule === "string")
-                opts.startRule = options.startRule;
-            result.ast = parser.parse(txt, opts);
+            result.ast = parser.parse(txt, options);
             result.error = null;
         }
         catch (e) {
