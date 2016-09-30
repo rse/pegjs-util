@@ -77,7 +77,7 @@ var PEG     = require("pegjs")
 var PEGUtil = require("pegjs-util")
 
 var asty = new ASTY()
-var parser = PEG.buildParser(fs.readFileSync("sample.pegjs", "utf8"))
+var parser = PEG.generate(fs.readFileSync("sample.pegjs", "utf8"))
 var result = PEGUtil.parse(parser, fs.readFileSync(process.argv[2], "utf8"), {
     startRule: "start",
     makeAST: function (line, column, offset, args) {
