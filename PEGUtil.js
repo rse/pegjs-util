@@ -26,12 +26,12 @@
 (function (root, name, factory) {
     /* global define: false */
     /* global module: false */
-    if (typeof define === "function" && typeof define.amd !== "undefined")
-        /*  AMD environment  */
-        define(name, function () { return factory(root); });
-    else if (typeof module === "object" && typeof module.exports === "object")
+    if (typeof module === "object" && typeof module.exports === "object")
         /*  CommonJS environment  */
         module.exports = factory(root);
+    else if (typeof define === "function" && typeof define.amd !== "undefined")
+        /*  AMD environment  */
+        define(name, function () { return factory(root); });
     else
         /*  Browser environment  */
         root[name] = factory(root);
