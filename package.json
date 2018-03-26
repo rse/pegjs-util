@@ -20,14 +20,14 @@
     "homepage": "https://github.com/rse/pegjs-util",
     "bugs":     "https://github.com/rse/pegjs-util/issues",
     "devDependencies": {
-        "grunt":                "~1.0.2",
-        "grunt-cli":            "~1.2.0",
-        "grunt-contrib-jshint": "~1.1.0",
-        "grunt-contrib-clean":  "~1.1.0",
-        "grunt-eslint":         "~20.1.0",
-        "asty":                 "~1.5.4"
+        "grunt":                "1.0.2",
+        "grunt-cli":            "1.2.0",
+        "grunt-contrib-jshint": "1.1.0",
+        "grunt-contrib-clean":  "1.1.0",
+        "grunt-eslint":         "20.1.0",
+        "asty":                 "1.5.4"
     },
     "dependencies": {
-        "pegjs":                ">=0.10.0"
+        "pegjs":                ">=4.0.0"
     }
 }
