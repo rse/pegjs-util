@@ -17,18 +17,8 @@ Generation* and *Cooked Error Reporting*.
 Installation
 ------------
 
-#### Node environments (with NPM package manager):
-
 ```shell
-$ npm install pegjs
-$ npm install pegjs-util
-```
-
-#### Browser environments (with Bower package manager):
-
-```shell
-$ bower install pegjs
-$ bower install pegjs-util
+$ npm install pegjs pegjs-util
 ```
 
 Usage
