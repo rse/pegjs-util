@@ -25,7 +25,7 @@
         "grunt-contrib-jshint": "1.1.0",
         "grunt-contrib-clean":  "1.1.0",
         "grunt-eslint":         "21.0.0",
-        "asty":                 "1.7.15"
+        "asty":                 "1.7.16"
     },
     "dependencies": {
         "pegjs":                ">=0.10.0"
