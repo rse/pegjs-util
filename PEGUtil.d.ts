@@ -30,7 +30,7 @@ export interface Options extends ParserOptions {
 export function makeAST(
   location: () => LocationRange,
   options: Options
-): Location & { args: any };
+): any;
 
 export function makeUnroll(
   location: () => LocationRange,
