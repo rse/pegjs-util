@@ -22,7 +22,7 @@
         "grunt-contrib-jshint": "3.0.0",
         "grunt-contrib-clean":  "2.0.0",
         "grunt-eslint":         "23.0.0",
-        "asty":                 "1.8.11"
+        "asty":                 "1.8.14"
     },
     "dependencies": {
         "pegjs":                ">=0.10.0"
