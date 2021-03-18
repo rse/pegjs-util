@@ -148,7 +148,7 @@
         }
         catch (e) {
             result.ast = null;
-            if (e instanceof parser.SyntaxError) {
+            if ((e instanceof Error && e.location) || (e instanceof parser.SyntaxError)) {
                 var definedOrElse = function (value, fallback) {
                     return (typeof value !== "undefined" ? value : fallback);
                 };
