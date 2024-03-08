@@ -1,6 +1,6 @@
 /*
-**  pegjs-util -- Utility Class for PEG.js
-**  Copyright (c) 2014-2021 Dr. Ralf S. Engelschall <rse@engelschall.com>
+**  pegjs-util -- Utility Class for Peggy
+**  Copyright (c) 2014-2024 Dr. Ralf S. Engelschall <rse@engelschall.com>
 **
 **  Permission is hereby granted, free of charge, to any person obtaining
 **  a copy of this software and associated documentation files (the
@@ -38,7 +38,7 @@ module.exports = function (grunt) {
         },
         eslint: {
             options: {
-                configFile: "eslint.json"
+                overrideConfigFile: "eslint.json"
             },
             target: [ "PEGUtil.js" ]
         },

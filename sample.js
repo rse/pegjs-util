@@ -1,6 +1,6 @@
 var fs      = require("fs")
 var ASTY    = require("asty")
-var PEG     = require("pegjs")
+var PEG     = require("peggy")
 var PEGUtil = require("./PEGUtil")
 
 var asty = new ASTY()

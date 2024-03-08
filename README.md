@@ -3,10 +3,11 @@ pegjs-util
 ===========
 
 This is a small utility class for the excellent
-[PEG.js](http://pegjs.org/) parser generator which wraps around PEG.js's
-central `parse` function and provides three distinct convenience
-features: *Parser Tree Token Unrolling*, *Abstract Syntax Tree Node
-Generation* and *Cooked Error Reporting*.
+[Peggy](https://peggyjs.org) (formerly [PEG.js](http://pegjs.org/))
+parser generator which wraps around Peggy's central `parse` function
+and provides three distinct convenience features: *Parser Tree Token
+Unrolling*, *Abstract Syntax Tree Node Generation* and *Cooked Error
+Reporting*.
 
 <p/>
 <img src="https://nodei.co/npm/pegjs-util.png?downloads=true&stars=true" alt=""/>
@@ -18,7 +19,7 @@ Installation
 ------------
 
 ```shell
-$ npm install pegjs pegjs-util
+$ npm install peggy pegjs-util
 ```
 
 Usage
@@ -63,7 +64,7 @@ ws "whitespaces"
 ```js
 var fs      = require("fs")
 var ASTY    = require("asty")
-var PEG     = require("pegjs")
+var PEG     = require("peggy")
 var PEGUtil = require("pegjs-util")
 
 var asty = new ASTY()
@@ -110,12 +111,13 @@ Description
 -----------
 
 PEGUtil is a small utility class for the excellent
-[PEG.js](http://pegjs.org/) parser generator. It wraps around PEG.js's
-central `parse` function and provides three distinct convenience features:
+[Peggy](https://peggyjs.org) (formerly [PEG.js](http://pegjs.org/))
+parser generator. It wraps around Peggy's central `parse` function and
+provides three distinct convenience features:
 
 ### Parser Tree Token Unrolling
 
-In many PEG.js gammar rule actions you have to concatenate a first token
+In many Peggy gammar rule actions you have to concatenate a first token
 and a repeated sequence of tokens, where from the sequence of tokens
 only relevant ones should be picked:
 
@@ -151,12 +153,12 @@ place the following at the top of your grammar definition:
 ```
 
 The `options.util` above points to the PEGUtil API and is made available
-automatically by using `PEGUtil.parse` instead of PEG.js's standard
+automatically by using `PEGUtil.parse` instead of Peggy's standard
 parser method `parse`.
 
 ### Abstract Syntax Tree Node Generation
 
-Usually the result of PEG.js grammar rule actions should
+Usually the result of Peggy grammar rule actions should
 be the generation of an Abstract Syntax Tree (AST) node.
 For this libraries like e.g. [ASTy](http://github.com/rse/asty) can be used.
 
@@ -196,12 +198,12 @@ you supply to the generated `ast()` function. For
 at least the type of the AST node.
 
 The `options.util` above again points to the PEGUtil API and is made available
-automatically by using `PEGUtil.parse` instead of PEG.js's standard
+automatically by using `PEGUtil.parse` instead of Peggy's standard
 parser method `parse`.
 
 ### Cooked Error Reporting
 
-Instead of calling the regular PEG.js `parser.parse(source[,
+Instead of calling the regular Peggy `parser.parse(source[,
 startRule])` you now should call `PEGUtil.parse(parser, source[,
 startRule])`. The result then is always an object consisting of either
 an `ast` field (in case of success) or an `error` field (in case of an
@@ -235,7 +237,7 @@ error message out of this information with
 License
 -------
 
-Copyright (c) 2014-2021 Dr. Ralf S. Engelschall (http://engelschall.com/)
+Copyright (c) 2014-2024 Dr. Ralf S. Engelschall (http://engelschall.com/)
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
