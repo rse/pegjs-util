@@ -6,7 +6,7 @@
     "main":        "PEGUtil.js",
     "repository": {
         "type": "git",
-        "url":  "https://github.com/rse/pegjs-util.git"
+        "url":  "git+https://github.com/rse/pegjs-util.git"
     },
     "author": {
         "name":  "Dr. Ralf S. Engelschall",
