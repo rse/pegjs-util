@@ -1,6 +1,6 @@
 {
     "name":        "pegjs-util",
-    "version":     "2.0.0",
+    "version":     "2.0.1",
     "description": "Utility Class for Peggy",
     "keywords":    [ "peggy", "pegjs", "parser", "AST", "unroll" ],
     "main":        "PEGUtil.js",
