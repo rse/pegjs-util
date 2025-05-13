@@ -128,7 +128,7 @@
             if (typeof options.makeAST === "function")
                 makeAST = options.makeAST;
             else {
-                makeAST = function (line, colums, offset, args) {
+                makeAST = function (line, column, offset, args) {
                     return {
                         line:   line,
                         column: column,
