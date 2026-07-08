@@ -17,11 +17,11 @@
     "homepage": "https://github.com/rse/pegjs-util",
     "bugs":     "https://github.com/rse/pegjs-util/issues",
     "devDependencies": {
-        "grunt":                "1.6.1",
+        "grunt":                "1.6.2",
         "grunt-cli":            "1.5.0",
         "grunt-contrib-jshint": "3.2.0",
         "grunt-contrib-clean":  "2.0.1",
-        "grunt-eslint":         "24.3.0",
+        "grunt-eslint":         "26.0.0",
         "asty":                 "1.8.21"
     },
     "dependencies": {

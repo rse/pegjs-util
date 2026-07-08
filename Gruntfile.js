@@ -38,7 +38,7 @@ module.exports = function (grunt) {
         },
         eslint: {
             options: {
-                overrideConfigFile: "eslint.json"
+                overrideConfigFile: "eslint.config.js"
             },
             target: [ "PEGUtil.js" ]
         },
